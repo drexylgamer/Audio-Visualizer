@@ -26,7 +26,7 @@
       background: rgba(0,0,0,0.6);
       padding: 10px;
       border-radius: 8px;
-      transition: opacity 0.3s;
+      transition: opacity 0.5s; /* already smooth */
     }
     button, input[type="range"], input[type="file"] {
       margin: 4px;
@@ -141,11 +141,11 @@
     // --- Hide controls and cursor in fullscreen ---
     document.addEventListener("fullscreenchange", () => {
       if (document.fullscreenElement) {
-        controls.style.opacity = 0;
         canvas.style.cursor = "none";   // hide cursor
+        controls.style.opacity = 0;     // fade out
       } else {
-        controls.style.opacity = 1;
-        canvas.style.cursor = "pointer"; // show cursor again
+        canvas.style.cursor = "pointer"; // show cursor
+        controls.style.opacity = 1;      // fade back in
       }
     });
 
