@@ -4,12 +4,13 @@
 <meta charset="UTF-8">
 <title>Audio Visualizer</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
   body {
     margin: 0;
     overflow: hidden;
     background: black;
     color: white;
-    font-family: sans-serif;
+    font-family: "Lato", sans-serif;
   }
   canvas {
     display: block;
@@ -31,22 +32,32 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    color: white;
   }
   button:hover {
     background: rgba(255,255,255,0.2);
   }
   label { font-size: 14px; }
+  .name {
+    position: absolute;
+    right: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: "Lato", sans-serif;
+    color: white;
+  }
 </style>
 </head>
 <body>
+  <h1 class="name">Drexyl</h1>
 <div id="controls">
   <input type="file" id="fileInput" accept="audio/*"><br>
   <button id="playBtn" disabled>Play</button>
   <button id="pauseBtn" disabled>Pause</button>
   <button id="stopBtn" disabled>Stop</button>
   <button id="modeBtn" disabled>Switch Mode</button><br>
-  <label>Bar Height: <input type="range" id="heightSlider" min="0.5" max="5" value="2.5" step="0.1"></label><br>
-  <label>Bar Count: <input type="range" id="barSlider" min="1" max="2048" value="256" step="16"></label>
+  <label>Bar Height: <input type="range" id="heightSlider" min="0.5" max="5" value="5" step="0.1"></label><br>
+  <label>Bar Count: <input type="range" id="barSlider" min="1" max="2048" value="353" step="16"></label>
 </div>
 <canvas id="visualizer"></canvas>
 
@@ -59,8 +70,8 @@ canvas.height = window.innerHeight;
 let audioContext, analyser, dataArray, bufferLength, source;
 let audio;
 let mode = "both";
-let barScale = 2.5;
-let barCount = 64; // default
+let barScale = 5;
+let barCount = 353; // default
 
 const controls = document.getElementById("controls");
 const playBtn = document.getElementById("playBtn");
@@ -119,7 +130,7 @@ barSlider.addEventListener("input", () => barCount = parseInt(barSlider.value));
 document.addEventListener("keydown", (e) => {
   if (!audio) return;
   if (e.code === "Space") { e.preventDefault(); audio.paused ? audio.play() : audio.pause(); }
-  else if (e.key.toLowerCase() === "r") { audio.currentTime=0; audio.play(); }
+  else if (e.key.toLowerCase() === "r") { audio.currentTime=0; audio.pause(); }
   else if (e.key.toLowerCase() === "s") {
     if (mode === "frequency") mode = "waveform";
     else if (mode === "waveform") mode = "both";
@@ -150,7 +161,7 @@ function draw() {
   if (!analyser) return;
 
   // Draw a semi-transparent black rectangle for fading effect
-  ctx.fillStyle = "rgba(0,0,0,0.05)";
+  ctx.fillStyle = "rgba(0,0,0,0.2)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   if (mode === "frequency") {
@@ -236,7 +247,7 @@ function draw() {
     for(let i=0;i<bufferLength;i++){
       const v = dataArray[i]/128.0;
       const waveformScale = 0.3; // 30% of canvas height
-      const y = canvas.height/2 + (v-1) * canvas.height * waveformScale;
+      const y = canvas.height/4 + (v-1) * canvas.height * waveformScale;
       if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
       x+=sliceWidth;
     }
