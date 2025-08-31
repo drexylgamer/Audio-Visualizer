@@ -191,7 +191,8 @@ function draw() {
     let x = 0;
     for(let i=0;i<bufferLength;i++){
       const v = dataArray[i]/128.0;
-      const y = v*canvas.height/2;
+      const waveformScale = 0.3; // 30% of canvas height
+      const y = canvas.height/2 + (v-1) * canvas.height * waveformScale;
       if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
       x+=sliceWidth;
     }
